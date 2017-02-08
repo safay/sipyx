@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+cd /Users/safay/git/sipyx
+. ve/bin/activate
+export FLASK_DEBUG=1
+export FLASK_APP=flaskapp.py
+flask run

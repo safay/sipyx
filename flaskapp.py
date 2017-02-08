@@ -6,13 +6,9 @@ import inspect
 app = Flask("corral")
 
 
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
-
-
 def expose_fxns(app, module):
     def _expose(fxn):
+        # given a function fxn, build a URL rule based on its name and args
         fxn_name = fxn.__name__
         url_rule = '/{}/'.format(fxn_name)
         for arg in inspect.getargspec(fxn).args:
@@ -20,17 +16,11 @@ def expose_fxns(app, module):
         url_rule = url_rule[:-1]
         app.add_url_rule(rule=url_rule, endpoint=fxn_name, view_func=fxn)
         return fxn
-    # iterates over the objects declared in a given module
+    # iterates over the objects declared in a given module, finding the functions and exposing them as endpoints
     for name in dir(module):
         obj = getattr(module, name, None)
         if isinstance(obj, types.FunctionType):
-            print name, obj
             _expose(obj)
 
 
 expose_fxns(app, plotting)
-
-print app.url_map
-
-
-# build a page that has each of the plots in it
